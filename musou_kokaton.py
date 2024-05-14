@@ -4,6 +4,7 @@ import random
 import sys
 import time
 import pygame as pg
+from pygame.sprite import Group
 
 WIDTH, HEIGHT = 1600, 900
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -216,6 +217,23 @@ class Enemy(pg.sprite.Sprite):
         self.rect.centery += self.vy
 
 
+class Emp:
+    def __init__(self, emys: "Enemy", bombs: "Bomb", screen):
+        for emy in emys:
+            emy.interval = math.inf
+            emy.image = pg.transform.laplacian(emy.image)
+            emy.image.set_colorkey((0,0,0))
+        for bomb in bombs:
+            bomb.speed = bomb.speed/2
+            bomb.state = "inactive"
+        img = pg.Surface((WIDTH,HEIGHT))
+        pg.draw.rect(img, (255, 255, 0), (0, 0, WIDTH, HEIGHT))
+        img.set_alpha(20)
+        screen.blit(img,[0, 0])
+        pg.display.update()
+        time.sleep(0.05)
+
+
 class Score:
     """
     打ち落とした爆弾，敵機の数をスコアとして表示するクラス
@@ -294,6 +312,9 @@ def main():
                 bird.state = "hyper"
                 bird.hyper_life = 500
                 score.value -= 100
+            if event.type == pg.KEYDOWN and event.key == pg.K_e and score.value >= 20:
+                Emp(emys, bombs, screen)
+                score.value -= 20
         screen.blit(bg_img, [0, 0])
 
         if tmr % 200 == 0:  # 200フレームに1回，敵機を出現させる
