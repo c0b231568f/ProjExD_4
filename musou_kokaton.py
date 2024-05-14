@@ -283,7 +283,7 @@ def main():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     beams.add(Beam(bird))
-                if event.key == pg.K_RETURN and score.value >= 0:
+                if event.key == pg.K_RETURN and score.value >= 200:
                     gravity_fields.add(Gravity(400))
                     score.value -= 200  # スコアを200消費
 
